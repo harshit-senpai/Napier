@@ -20,7 +20,7 @@ const MenuItems = () => {
     <nav className=" dark:bg-black h-full overflow-scroll  justify-between flex items-center flex-col  gap-10 py-6 px-2">
       <div className="flex items-center justify-center flex-col gap-8">
         <Link className="flex font-bold flex-row " href="/">
-          fuzzie.
+          Napier.
         </Link>
         <TooltipProvider>
           {menuOptions.map((menuItem) => (
