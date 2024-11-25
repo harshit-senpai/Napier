@@ -15,6 +15,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 
 export const ProfileForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +39,7 @@ export const ProfileForm = () => {
             <FormItem>
               <FormLabel className="text-lg">User Full Name</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Name" />
+                <Input {...field} placeholder="Name" className="max-w-72" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -52,7 +53,11 @@ export const ProfileForm = () => {
             <FormItem>
               <FormLabel className="text-lg">User Email</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="example@gmail.com" />
+                <Input
+                  {...field}
+                  placeholder="example@gmail.com"
+                  className="max-w-72"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
