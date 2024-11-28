@@ -1,5 +1,6 @@
 "use client";
 
+import { WorkflowForm } from "@/components/forms/WorkflowForm";
 import { CustomModal } from "@/components/global/CustomModal";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/providers/ModalProvider";
@@ -20,7 +21,7 @@ export const WorkflowButton = () => {
   };
 
   return (
-    <Button size={"icon"}>
+    <Button size={"icon"} onClick={handleClick}>
       <Plus />
     </Button>
   );
