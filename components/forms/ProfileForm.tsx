@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EditUserProfileSchema } from "@/schema";
 import {
@@ -16,21 +16,43 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Loader2 } from "lucide-react";
+import { User } from "@prisma/client";
 
-export const ProfileForm = () => {
+type props = {
+  user: User | null;
+  onUpdate: (name: string) => void;
+};
+
+export const ProfileForm = ({ user, onUpdate }: props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof EditUserProfileSchema>>({
     mode: "onChange",
     resolver: zodResolver(EditUserProfileSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: user?.name || "",
+      email: user?.email || "",
     },
   });
+
+  const handleSubmit = async (
+    values: z.infer<typeof EditUserProfileSchema>
+  ) => {
+    setIsLoading(true);
+    await onUpdate(values.name);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    form.reset({ name: user?.name ?? "", email: user?.email });
+  }, [user]);
+
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-6">
+      <form
+        className="flex flex-col gap-6"
+        onSubmit={form.handleSubmit(handleSubmit)}
+      >
         <FormField
           disabled={isLoading}
           control={form.control}
@@ -39,7 +61,12 @@ export const ProfileForm = () => {
             <FormItem>
               <FormLabel className="text-lg">User Full Name</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="Name" className="max-w-72" />
+                <Input
+                  {...field}
+                  placeholder="Name"
+                  className="max-w-72"
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -55,6 +82,7 @@ export const ProfileForm = () => {
               <FormControl>
                 <Input
                   {...field}
+                  disabled={true}
                   placeholder="example@gmail.com"
                   className="max-w-72"
                 />

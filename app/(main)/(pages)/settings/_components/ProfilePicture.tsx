@@ -27,17 +27,18 @@ export const ProfilePicture = ({ userImage, onDelete, onUpload }: Props) => {
         {userImage ? (
           <>
             <div className="relative h-full w-2/12">
-              <Image src={userImage} alt="user-image" fill />
+              <Image src={userImage} alt="user-image" fill className="rounded-lg h-12 w-12" />
             </div>
             <Button
               onClick={onRemoveProfileImage}
-              className="bg-transparent text-white/70 hover:bg-transparent hover:text-white"
+              className="bg-transparent text-white/70 hover:bg-transparent hover:text-white flex gap-4"
             >
               <X />
+              Remove Image
             </Button>
           </>
         ) : (
-          <UploadcareButton />
+          <UploadcareButton onUpload={onUpload} />
         )}
       </div>
     </div>

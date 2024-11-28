@@ -1,8 +1,21 @@
 import { ProfileForm } from "@/components/forms/ProfileForm";
 import { ProfilePicture } from "./_components/ProfilePicture";
 import { db } from "@/lib/db";
+import { currentUser } from "@clerk/nextjs/server";
 
-const SettingsPage = () => {
+const SettingsPage = async () => {
+  const authUser = await currentUser();
+
+  if (!authUser) {
+    return null;
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      clerkId: authUser.id,
+    },
+  });
+
   const removeProfileImage = async () => {
     "use server";
     const response = await db.user.update({
@@ -15,6 +28,32 @@ const SettingsPage = () => {
     });
     return response;
   };
+
+  const uploadProfileImage = async (image: string) => {
+    "use server";
+    const response = await db.user.update({
+      where: {
+        clerkId: authUser.id,
+      },
+      data: {
+        profileImage: image,
+      },
+    });
+    return response;
+  };
+
+  const updateUserInfo = async (name: string) => {
+    "use server";
+    const response = await db.user.update({
+      where: {
+        clerkId: authUser.id,
+      },
+      data: {
+        name
+      }
+    })
+    return response;
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -33,7 +72,7 @@ const SettingsPage = () => {
           userImage={user?.profileImage || ""}
           onUpload={uploadProfileImage}
         />
-        <ProfileForm />
+        <ProfileForm user={user} onUpdate={updateUserInfo} />
       </div>
     </div>
   );

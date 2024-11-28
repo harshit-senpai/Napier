@@ -1,8 +1,8 @@
 "use client";
 
-import * as LR from "@uploadcare/blocks";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { FileUploaderRegular } from "@uploadcare/react-uploader/next";
+import "@uploadcare/react-uploader/core.css";
 
 type props = {
   onUpload?: any;
@@ -10,34 +10,25 @@ type props = {
 
 export const UploadcareButton = ({ onUpload }: props) => {
   const router = useRouter();
-  const ctxProviderRef = useRef<
-    typeof LR.UploadCtxProvider.prototype & LR.UploadCtxProvider
-  >(null);
 
-  useEffect(() => {
-    const handleUpload = async (e: any) => {
-      const file = await onUpload(e.detail.cdnUrl);
-      if (file) {
-        router.refresh();
-      }
-    };
-
-    ctxProviderRef.current?.addEventListener(
-      "file-upload-success",
-      handleUpload
-    );
-  }, []);
+  const handleChangeEvent = (e: any) => {
+    const successfulFiles = e.allEntries.filter((file: any) => file.status === "success");
+    
+    if (successfulFiles.length > 0) {
+      const imageUrl = successfulFiles[0].cdnUrl;
+      onUpload(imageUrl);
+      router.refresh();
+    }
+  };
 
   return (
     <div>
-      <lr-config ctx-name="my-uploader" pubkey="a9428ff5ff90ae7a64eb" />
-
-      <lr-file-uploader-regular
-        ctx-name="my-uploader"
-        css-src={`https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.35.2/web/lr-file-uploader-regular.min.css`}
+      <FileUploaderRegular
+        onChange={handleChangeEvent}
+        sourceList="local, url, camera, dropbox"
+        classNameUploader="uc-light"
+        pubkey="61e02af960ad7c287a94"
       />
-
-      <lr-upload-ctx-provider ctx-name="my-uploader" ref={ctxProviderRef} />
     </div>
   );
 };
